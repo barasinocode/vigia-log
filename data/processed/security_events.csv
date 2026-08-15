@@ -13,3 +13,7 @@ timestamp,username,ip_address,country,status,device,date,hour,failed_attempts,ac
 2026-08-15 14:20:15,maria,203.0.113.50,BR,FAILED,Chrome,2026-08-15,14,4,4,False,5,MEDIUM,False,True
 2026-08-15 14:20:30,admin,203.0.113.50,BR,FAILED,Chrome,2026-08-15,14,4,4,False,5,MEDIUM,False,True
 2026-08-15 14:20:45,carlos,203.0.113.50,BR,FAILED,Chrome,2026-08-15,14,4,4,False,5,MEDIUM,False,True
+2026-08-15 16:30:00,paulo,198.51.100.25,BR,FAILED,Chrome,2026-08-15,16,3,1,False,1,LOW,False,False
+2026-08-15 16:30:15,paulo,198.51.100.25,BR,FAILED,Chrome,2026-08-15,16,3,1,False,1,LOW,False,False
+2026-08-15 16:30:30,paulo,198.51.100.25,BR,FAILED,Chrome,2026-08-15,16,3,1,False,1,LOW,False,False
+2026-08-15 16:30:45,paulo,198.51.100.25,BR,SUCCESS,Chrome,2026-08-15,16,3,1,True,6,HIGH,False,False
