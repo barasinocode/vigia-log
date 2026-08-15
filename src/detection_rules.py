@@ -1,11 +1,36 @@
+def add_failed_attempts_count(df):
+    df = df.copy()
+
+    failed_counts = (
+        df[df["status"] == "FAILED"]
+        .groupby("ip_address")
+        .size()
+    )
+
+    df["failed_attempts"] = (
+        df["ip_address"]
+        .map(failed_counts)
+        .fillna(0)
+        .astype(int)
+    )
+
+    return df
+
+
 def calculate_risk_score(row):
     score = 0
 
+    # Login com falha
     if row["status"] == "FAILED":
         score += 1
 
+    # Login em horário incomum
     if row["hour"] < 6 or row["hour"] >= 23:
         score += 2
+
+    # Possível tentativa de força bruta
+    if row["failed_attempts"] >= 5:
+        score += 4
 
     return score
 
@@ -21,7 +46,7 @@ def classify_risk(score):
 
 
 def analyze_security_events(df):
-    df = df.copy()
+    df = add_failed_attempts_count(df)
 
     df["risk_score"] = df.apply(
         calculate_risk_score,
@@ -32,4 +57,9 @@ def analyze_security_events(df):
         classify_risk
     )
 
-    return df
+    df["brute_force_alert"] = (
+        df["failed_attempts"] >= 5
+    )
+
+    return df 
+    
