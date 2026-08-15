@@ -35,24 +35,56 @@ def add_multiple_accounts_count(df):
     return df
 
 
+def add_compromised_login_alert(df):
+    df = df.copy()
+
+    df = df.sort_values("timestamp")
+
+    alert_indexes = []
+
+    for (ip_address, username), group in df.groupby(
+        ["ip_address", "username"]
+    ):
+        failed_count = 0
+
+        for index, row in group.iterrows():
+
+            if row["status"] == "FAILED":
+                failed_count += 1
+
+            elif row["status"] == "SUCCESS":
+                if failed_count >= 3:
+                    alert_indexes.append(index)
+
+                failed_count = 0
+
+    df["possible_compromise_alert"] = False
+
+    df.loc[
+        alert_indexes,
+        "possible_compromise_alert"
+    ] = True
+
+    return df
+
+
 def calculate_risk_score(row):
     score = 0
 
-    # Login com falha
     if row["status"] == "FAILED":
         score += 1
 
-    # Login em horário incomum
     if row["hour"] < 6 or row["hour"] >= 23:
         score += 2
 
-    # Possível tentativa de força bruta
     if row["failed_attempts"] >= 5:
         score += 4
 
-    # Mesmo IP tentando acessar várias contas
     if row["accounts_attempted"] >= 3:
         score += 4
+
+    if row["possible_compromise_alert"]:
+        score += 6
 
     return score
 
@@ -72,6 +104,8 @@ def analyze_security_events(df):
 
     df = add_multiple_accounts_count(df)
 
+    df = add_compromised_login_alert(df)
+
     df["risk_score"] = df.apply(
         calculate_risk_score,
         axis=1
@@ -89,5 +123,6 @@ def analyze_security_events(df):
         df["accounts_attempted"] >= 3
     )
 
+
     return df
-    
+
