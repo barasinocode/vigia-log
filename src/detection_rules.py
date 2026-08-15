@@ -17,6 +17,24 @@ def add_failed_attempts_count(df):
     return df
 
 
+def add_multiple_accounts_count(df):
+    df = df.copy()
+
+    accounts_per_ip = (
+        df.groupby("ip_address")["username"]
+        .nunique()
+    )
+
+    df["accounts_attempted"] = (
+        df["ip_address"]
+        .map(accounts_per_ip)
+        .fillna(0)
+        .astype(int)
+    )
+
+    return df
+
+
 def calculate_risk_score(row):
     score = 0
 
@@ -30,6 +48,10 @@ def calculate_risk_score(row):
 
     # Possível tentativa de força bruta
     if row["failed_attempts"] >= 5:
+        score += 4
+
+    # Mesmo IP tentando acessar várias contas
+    if row["accounts_attempted"] >= 3:
         score += 4
 
     return score
@@ -48,6 +70,8 @@ def classify_risk(score):
 def analyze_security_events(df):
     df = add_failed_attempts_count(df)
 
+    df = add_multiple_accounts_count(df)
+
     df["risk_score"] = df.apply(
         calculate_risk_score,
         axis=1
@@ -61,5 +85,9 @@ def analyze_security_events(df):
         df["failed_attempts"] >= 5
     )
 
-    return df 
+    df["multiple_accounts_alert"] = (
+        df["accounts_attempted"] >= 3
+    )
+
+    return df
     

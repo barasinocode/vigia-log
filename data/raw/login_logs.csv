@@ -9,3 +9,7 @@ timestamp,username,ip_address,country,status,device
 2026-08-15 02:12:00,carlos,92.100.15.80,US,FAILED,Chrome
 2026-08-15 02:13:20,carlos,92.100.15.80,US,FAILED,Chrome
 2026-08-15 10:15:00,ana,192.168.1.50,BR,SUCCESS,Chrome
+2026-08-15 14:20:00,joao,203.0.113.50,BR,FAILED,Chrome
+2026-08-15 14:20:15,maria,203.0.113.50,BR,FAILED,Chrome
+2026-08-15 14:20:30,admin,203.0.113.50,BR,FAILED,Chrome
+2026-08-15 14:20:45,carlos,203.0.113.50,BR,FAILED,Chrome
